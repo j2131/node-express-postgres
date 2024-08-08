@@ -21,9 +21,9 @@
           </form>
         </div>
         <div class="col-md-6">
-          <ul>
+          <ul id="todo-list">
             <% for(let todo of todos){ %>
-              <li><span><%= todo.content %></span></li>
+              <li data-id="1"><span><%= todo.content %><button class="delete-btn">Delete</button></span></li>
             <% } %>
           </ul>
         </div>
@@ -33,6 +33,26 @@
     <h1>Welcome to the TodoApp</h1>
     <a class="btn btn-primary" href="/signup" role="button">Sign up now!</a>
   <% } %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+    const id = this.parentElement.getAttribute('data-id');
+    fetch(`/api/todos/${id}`, {
+              method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                this.parentElement.remove();
+              } else {
+                alert('Failed to delete the task');
+              }
+            });
+          });
+        });
+      });
+    </script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
           integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
           crossorigin="anonymous"></script>
