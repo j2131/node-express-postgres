@@ -28,6 +28,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
 // router
 app.use('/', require('./routes'));
 
@@ -46,5 +48,28 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+app.get('/', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM todos');
+    res.render('index', { todos: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
 
+app.delete('/api/todos/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await pool.query('DELETE FROM todos WHERE id = $1', [id]);
+    if (result.rowCount > 0) {
+      res.json({ success: true });
+    } else {
+      res.json({ success: false });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
 module.exports = app;
