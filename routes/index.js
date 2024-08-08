@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const knex = require('../db/knex');
 
 router.get('/', function (req, res, next) {
@@ -44,5 +45,24 @@ router.post('/', function (req, res, next) {
 router.use('/signup', require('./signup'));
 router.use('/signin', require('./signin'));
 router.use('/logout', require('./logout'));
+
+
+const mysql = require('pg');
+
+const connection = new pg.Pool({
+  host: 'localhost',
+  user: 'root',
+  password: 'postgres',
+  database: 'todo_app',
+  port: 5432,
+  });  
+
+
+
+
+let todos = [];
+
+
+
 
 module.exports = router;
